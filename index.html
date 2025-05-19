@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pedido Especial</title>
+  <style>
+    :root {
+      --roxo: #8e44ad;
+      --rosa: #ff6f91;
+      --branco: #ffffff;
+      --fundo: #1a1a1a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--fundo);
+      color: var(--branco);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    .card {
+      background: #2e2e2e;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+      max-width: 500px;
+      width: 100%;
+      margin-bottom: 20px;
+      animation: fadeIn 0.8s ease;
+      transition: all 0.5s ease-in-out;
+    }
+
+    .card.saindo {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+
+    .card.entrando {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+
+    .card.aparecendo {
+      transform: translateX(0);
+      opacity: 1;
+    }
+
+    button {
+      background: var(--roxo);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 20px;
+      margin: 10px 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background: var(--rosa);
+    }
+
+    #naoBtn {
+      position: absolute;
+    }
+
+    iframe {
+      width: 100%;
+      height: 200px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+
+    .terminal {
+      background: #111;
+      color: #00ff90;
+      padding: 20px;
+      font-family: monospace;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 500px;
+      height: 180px;
+      overflow-y: auto;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .digitando::after {
+      content: "|";
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+
+      0%,
+      50%,
+      100% {
+        opacity: 1;
+      }
+
+      25%,
+      75% {
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <audio id="musicaFundo" src="audio/inicio.mp3" autoplay loop></audio>
+  <div class="terminal" id="terminal"></div>
+  <div class="card" id="conteudo" style="display: none">
+    <p id="texto">
+      Oi, amor... Antes de qualquer coisa, preciso que você leia isso com o coração.
+    </p>
+    <button id="btnAvancar" onclick="avancar()" disabled>Próximo</button>
+  </div>
+
+  <script>
+    const terminalText = [
+      "Inicializando sistema romântico...",
+      "Carregando sentimentos...",
+      "Preparando surpresas...",
+      "Estabelecendo conexão com o coração dela...",
+      "Pronto! Toque em 'Jogar' para começar."
+    ];
+
+    let terminalIndex = 0;
+    const terminalDiv = document.getElementById("terminal");
+    const conteudo = document.getElementById("conteudo");
+    const btnAvancar = document.getElementById("btnAvancar");
+
+    function mostrarTerminal() {
+      if (terminalIndex < terminalText.length) {
+        terminalDiv.innerHTML += `<p>> ${terminalText[terminalIndex]}</p>`;
+        terminalIndex++;
+        setTimeout(mostrarTerminal, 1200);
+      } else {
+        setTimeout(() => {
+          terminalDiv.innerHTML += `<p><button onclick='iniciarJornada()'>Jogar</button></p>`;
+        }, 1500);
+      }
+    }
+
+    function iniciarJornada() {
+      terminalDiv.style.display = "none";
+      conteudo.style.display = "block";
+      document.getElementById("musicaFundo").play();
+      setTimeout(() => (btnAvancar.disabled = false), 3000);
+    }
+
+    const frases = [
+      "Oi, amor... Antes de qualquer coisa, preciso que você leia isso com o coração.",
+      "Eu preparei isso com todo carinho só pra você... Não é só um joguinho, é algo que eu queria muito te mostrar.",
+      "Mas antes de tudo, preciso testar seus conhecimentos... Será que você lembra bem do que gosta?",
+      "Vamos brincar um pouco, depois eu te explico o porquê de tudo isso.",
+      "Preparada? Vamos lá!"
+    ];
+
+    const quiz = [
+      { pergunta: "Qual dessas coisas a Tata mais ama?", opcoes: ["Churrasco", "Silêncio absoluto", "BTS", "Planilhas do Excel"] },
+      { pergunta: "Se ela pudesse escolher um superpoder, qual seria?", opcoes: ["Ficar invisível", "Voar até um show do BTS", "Ler minha mente", "Fazer café infinito"] },
+      { pergunta: "O que o namorado dela tem de melhor?", opcoes: ["O charme", "As piadas ruins", "O amor por ela", "Sites fofos"] },
+      { pergunta: "Se ela visse o Jungkook na rua, o que faria?", opcoes: ["Desmaia", "Grita", "Corre atrás", "Lembra que tem o melhor namorado"] },
+      { pergunta: "Qual artista faz ela chorar com música?", opcoes: ["Luan Santana", "Zezé di Camargo", "Jimin Park", "Todos acima"] },
+    ];
+
+    const finais = [
+      "Tá vendo? Você é única. Até nas respostas malucas!",
+      "Mas agora, sério... O que eu queria mesmo te dizer era outra coisa.",
+      "Desde que você chegou, tudo mudou. Você trouxe cor, luz e amor pra minha vida.",
+      "Eu amo cada pedacinho de você, até o jeito que briga e se estressa. Tudo em você me encanta.",
+      "Eu queria estar aí, do seu lado. Te abraçar nos dias difíceis, rir com você nos bons.",
+      "E mesmo sem muito a oferecer... sem riquezas ou grandes surpresas...",
+      "Eu tenho algo que é só seu: meu amor. Meu coração, minha dedicação, meu cuidado.",
+      "E é por isso que... eu tenho uma pergunta importante."
+    ];
+
+    let etapa = 0, fase = "frases", quizIndex = 0, tentativasNao = 0;
+
+    function trocarCard(callback) {
+      conteudo.classList.add("saindo");
+      setTimeout(() => {
+        conteudo.classList.remove("saindo");
+        conteudo.classList.add("entrando");
+        callback();
+        setTimeout(() => {
+          conteudo.classList.remove("entrando");
+          conteudo.classList.add("aparecendo");
+        }, 50);
+      }, 100);
+    }
+
+    function avancar() {
+      const t = document.getElementById("texto");
+      if (fase === "frases") {
+        etapa++;
+        if (etapa < frases.length) {
+          trocarCard(() => t.innerText = frases[etapa]);
+        } else {
+          fase = "quiz";
+          trocarCard(mostrarQuiz);
+        }
+      }
+    }
+
+    function mostrarQuiz() {
+      conteudo.innerHTML = `<p>${quiz[quizIndex].pergunta}</p>`;
+      quiz[quizIndex].opcoes.forEach(op => {
+        const btn = document.createElement("button");
+        btn.innerText = op;
+        btn.onclick = () => {
+          quizIndex++;
+          if (quizIndex < quiz.length) trocarCard(mostrarQuiz);
+          else trocarCard(mostrarFinais);
+        };
+        conteudo.appendChild(btn);
+      });
+    }
+
+    function mostrarFinais() {
+      etapa = 0;
+      fase = "finais";
+      document.getElementById("musicaFundo").src = "audio/pedido.mp3";
+      document.getElementById("musicaFundo").play();
+      conteudo.innerHTML = `<p id="texto" class="digitando"></p><button onclick="mostrarProximoFinal()">Continuar</button>`;
+      digitarTexto(finais[etapa]);
+    }
+
+    function mostrarProximoFinal() {
+      etapa++;
+      if (etapa < finais.length) {
+        digitarTexto(finais[etapa]);
+      } else {
+        mostrarPedido();
+      }
+    }
+
+    function digitarTexto(texto) {
+      const t = document.getElementById("texto");
+      t.innerHTML = "";
+      let i = 0;
+      const intervalo = setInterval(() => {
+        t.innerHTML = texto.slice(0, i + 1);
+        i++;
+        if (i >= texto.length) clearInterval(intervalo);
+      }, 50);
+    }
+
+    function mostrarPedido() {
+      conteudo.innerHTML = `
+        <p>Você quer namorar comigo?</p>
+        <button onclick="mostrarSurpresa()">Sim!</button>
+        <button id="naoBtn" onmouseover="fugir()" onclick="clicarNao()">Não</button>`;
+    }
+
+    function fugir() {
+      const btn = document.getElementById("naoBtn");
+      const x = Math.random() * (window.innerWidth - 100);
+      const y = Math.random() * (window.innerHeight - 100);
+      btn.style.left = `${x}px`;
+      btn.style.top = `${y}px`;
+    }
+
+    function clicarNao() {
+      tentativasNao++;
+      if (tentativasNao >= 3) {
+        alert("Você não pode dizer não! Amor não tem botão de rejeitar.");
+      } else {
+        fugir();
+      }
+    }
+
+    function mostrarSurpresa() {
+      conteudo.innerHTML = `
+        <p>Espera aí... tem um presentinho!</p>
+        <button onclick="mostrarFinal()">Ver presente</button>`;
+    }
+
+    function mostrarFinal() {
+      const hoje = new Date();
+      const dataFormatada = hoje.toLocaleDateString("pt-BR");
+
+      conteudo.innerHTML = `
+    <div style="animation: fadeIn 1s ease; padding: 20px; max-width: 500px; margin: 0 auto; color: #fff; text-align: center;">
+      <h2 style="color: #ff6f91; font-size: 28px; margin-bottom: 10px;">Carlos e Tata!❤️</h2>
+      <p style="font-size: 16px; margin-bottom: 20px; font-style: italic;">Desde: <span style="color: #ff6f91;">${dataFormatada}</span></p>
+
+      <p style="font-style: italic; margin-bottom: 15px; color: #ccc;">“Você é a melodia mais bonita da minha vida.”</p>
+
+      <div id="slideshow" style="position: relative; margin-bottom: 25px; border-radius: 20px; overflow: hidden; box-shadow: 0 0 25px rgba(255, 111, 145, 0.4);">
+        <img src="img/Abraço Cores de Afeto.png" style="width: 100%; display: block;" />
+        <button id="prevBtn" style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); background: rgba(255,111,145,0.7); border:none; color:#fff; font-size: 24px; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">&#10094;</button>
+        <button id="nextBtn" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: rgba(255,111,145,0.7); border:none; color:#fff; font-size: 24px; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">&#10095;</button>
+      </div>
+
+      <p style="margin-bottom: 10px; font-weight: bold;">Aqui algumas músicas que eu sei que você ama:</p>
+      
+      <div style="margin-bottom: 20px;">
+        <p style="margin-bottom: 5px;">BTS - Heartbeat</p>
+        <iframe width="100%" height="150" src="https://www.youtube.com/embed/aKSxbt-O6TA" title="BTS Heartbeat" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <p style="margin-bottom: 5px;">Luan Santana - Te Esperando</p>
+        <iframe width="100%" height="150" src="https://www.youtube.com/embed/qvTJKqZfBjg" title="Luan Santana Te Esperando" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <p style="margin-bottom: 5px;">Leandro & Leonardo - É Por Você Que Canto</p>
+        <iframe width="100%" height="150" src="https://www.youtube.com/embed/pmSYRpd4uJ4" title="Leonardo - É Por Você Que Canto" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+    </div>
+  `;
+
+      const imagens = [
+        "img/Abraço Cores de Afeto.png",
+        "img/Casal ao Sol na Janela.png",
+        "img/Casal Assistindo TV Juntos.png",
+        "img/Momento Romântico sob as Cerejeiras.png",
+        "img/Pôr do sol com mãos entrelaçadas.png"
+      ];
+
+      let index = 0;
+      const imgElement = document.querySelector("#slideshow img");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      function mostrarImagem(i) {
+        if (i < 0) i = imagens.length - 1;
+        if (i >= imagens.length) i = 0;
+        index = i;
+        imgElement.src = imagens[index];
+      }
+
+      prevBtn.onclick = () => {
+        mostrarImagem(index - 1);
+      };
+
+      nextBtn.onclick = () => {
+        mostrarImagem(index + 1);
+      };
+
+      setInterval(() => {
+        mostrarImagem(index + 1);
+      }, 5000);
+
+      // corações voando
+      for (let i = 0; i < 15; i++) {
+        const coracao = document.createElement("div");
+        coracao.className = "coracao";
+        coracao.style.left = `${Math.random() * 100}%`;
+        coracao.style.animationDelay = `${Math.random() * 5}s`;
+        document.body.appendChild(coracao);
+      }
+    }
+
+    function mostrarFinal() {
+      const hoje = new Date();
+      const dataFormatada = hoje.toLocaleDateString("pt-BR");
+
+      conteudo.innerHTML = `
+    <div style="animation: fadeIn 1s ease; padding: 20px; max-width: 500px; margin: 0 auto; color: #fff; text-align: center;">
+      <h2 style="color: #ff6f91; font-size: 28px; margin-bottom: 10px;">Carlos e Tata!❤️</h2>
+      <p style="font-size: 16px; margin-bottom: 20px; font-style: italic;">Desde: <span style="color: #ff6f91;">${dataFormatada}</span></p>
+
+      <p style="font-style: italic; margin-bottom: 15px; color: #ccc;">“Você é a melodia mais bonita da minha vida.”</p>
+
+      <div id="slideshow" style="position: relative; margin-bottom: 25px; border-radius: 20px; overflow: hidden; box-shadow: 0 0 25px rgba(255, 111, 145, 0.4);">
+        <img src="img/Abraço Cores de Afeto.png" style="width: 100%; display: block;" />
+        <button id="prevBtn" style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); background: rgba(255,111,145,0.7); border:none; color:#fff; font-size: 24px; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">&#10094;</button>
+        <button id="nextBtn" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); background: rgba(255,111,145,0.7); border:none; color:#fff; font-size: 24px; border-radius: 50%; width: 40px; height: 40px; cursor: pointer;">&#10095;</button>
+      </div>
+
+      <p style="margin-bottom: 10px; font-weight: bold;">Aqui algumas músicas que eu sei que você ama:</p>
+      
+      <div style="margin-bottom: 20px;">
+        <p style="margin-bottom: 5px;">BTS - Heartbeat</p>
+        <iframe width="100%" height="150" src="https://www.youtube.com/embed/aKSxbt-O6TA" title="BTS Heartbeat" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <p style="margin-bottom: 5px;">Luan Santana - Te Esperando</p>
+        <iframe width="100%" height="150" src="https://www.youtube.com/embed/qvTJKqZfBjg" title="Luan Santana Te Esperando" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+
+      <div style="margin-bottom: 20px;">
+        <p style="margin-bottom: 5px;">Leandro & Leonardo - É Por Você Que Canto</p>
+        <iframe width="100%" height="150" src="https://www.youtube.com/embed/pmSYRpd4uJ4" title="Leonardo - É Por Você Que Canto" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      </div>
+    </div>
+  `;
+
+      const imagens = [
+        "img/Abraço Cores de Afeto.png",
+        "img/Casal ao Sol na Janela.png",
+        "img/Casal Assistindo TV Juntos.png",
+        "img/Momento Romântico sob as Cerejeiras.png",
+        "img/Pôr do sol com mãos entrelaçadas.png"
+      ];
+
+      let index = 0;
+      const imgElement = document.querySelector("#slideshow img");
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+
+      function mostrarImagem(i) {
+        if (i < 0) i = imagens.length - 1;
+        if (i >= imagens.length) i = 0;
+        index = i;
+        imgElement.src = imagens[index];
+      }
+
+      prevBtn.onclick = () => {
+        mostrarImagem(index - 1);
+      };
+
+      nextBtn.onclick = () => {
+        mostrarImagem(index + 1);
+      };
+
+      setInterval(() => {
+        mostrarImagem(index + 1);
+      }, 5000);
+
+      // corações voando
+      for (let i = 0; i < 15; i++) {
+        const coracao = document.createElement("div");
+        coracao.className = "coracao";
+        coracao.style.left = `${Math.random() * 100}%`;
+        coracao.style.animationDelay = `${Math.random() * 5}s`;
+        document.body.appendChild(coracao);
+      }
+    }
+
+
+
+    mostrarTerminal();
+  </script>
+</body>
+
+</html>
